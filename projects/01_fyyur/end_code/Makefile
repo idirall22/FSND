@@ -1,9 +1,9 @@
 POSTGRES_CONTAINER_NAME=fyyur-postgres
 
-migrate:
+migrate: clear-migration
 	flask db init
 	flask db migrate -m "Initial migration."
-	flask db upgrade
+	flask db upgrade	
 
 clear-migration:
 	rm -r migrations
@@ -22,7 +22,15 @@ postgres-up:
 
 postgres-down:
 	docker rm -f $(POSTGRES_CONTAINER_NAME)
+	
 
 run:
+	export FLASK_APP=myapp
+	export FLASK_ENV=development
 	python3 app.py
 
+env:
+	virtualenv env
+
+freeze:
+	 pip3 freeze > requirements.txt
