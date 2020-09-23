@@ -1,0 +1,1 @@
+error_delete = 'Could not delete'
