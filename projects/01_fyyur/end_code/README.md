@@ -1,6 +1,20 @@
 Fyyur
 -----
 
+### Start Fyyur App
+```
+Run these commands:
+make env         # create env
+make install     # install requirment.txt
+make postgres-up # start postgres container
+make migrate     # migrate sql database 
+make run         # start app
+
+clean app:
+make postgres-down
+make clean-migrate
+```
+
 ### Introduction
 
 Fyyur is a musical venue and artist booking site that facilitates the discovery and bookings of shows between local performing artists and venues. This site lets you list new artists and venues, discover them, and list shows with artists as a venue owner.

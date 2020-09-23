@@ -1,12 +1,15 @@
 POSTGRES_CONTAINER_NAME=fyyur-postgres
 
+install:
+	pip3 install -r requirements.txt
+
 migrate: clear-migration
 	flask db init
 	flask db migrate -m "Initial migration."
 	flask db upgrade	
 
 clear-migration:
-	rm -r migrations
+	rm -rf migrations
 
 connect:
 	docker exec -it $(POSTGRES_CONTAINER_NAME) sh
@@ -23,7 +26,6 @@ postgres-up:
 postgres-down:
 	docker rm -f $(POSTGRES_CONTAINER_NAME)
 	
-
 run:
 	export FLASK_APP=myapp
 	export FLASK_ENV=development
