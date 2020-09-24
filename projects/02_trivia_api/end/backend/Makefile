@@ -41,9 +41,9 @@ populate:
 	docker exec $(POSTGRES_CONTAINER_NAME) sh -c "psql -U postgres -d trivia -c '\i trivia.psql'"
 	
 run:
-	export FLASK_APP=myapp
+	export FLASK_APP=flaskr
 	export FLASK_ENV=development
-	python3 app.py
+	flask run
 
 env:
 	virtualenv env
