@@ -24,7 +24,7 @@ class App extends Component {
           <Route path="/add" component={FormView} />
           <Route path="/play" component={QuizView} />
           <Route component={QuestionView} />
-        </Switch>
+        </Switch> 
       </Router>
     </div>
   );

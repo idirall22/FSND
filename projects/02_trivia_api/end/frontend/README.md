@@ -1,5 +1,9 @@
 # Full Stack Trivia API  Frontend
 
+## Start Frontend
+1. make install
+2. make start
+    
 ## Getting Setup
 
 > _tip_: this frontend is designed to work with [Flask-based Backend](../backend). It is recommended you stand up the backend first, test using Postman or curl, update the endpoints in the frontend, and then the frontend should integrate smoothly.
