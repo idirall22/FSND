@@ -31,11 +31,13 @@ def create_app(test_config=None):
   def homepage():
     abort(500)
 
-
+  ###
   @app.route('/categories', methods=['GET'])
   def get_all_categories():
     """
     GET request for all available categories
+    Ex:
+      GET /categories
     """
     allCategories = Category.query.all()
     categories = {}
@@ -49,6 +51,8 @@ def create_app(test_config=None):
   def get_questions():
     """
     Get request for questions, categories, total number of total questions.
+    Ex:
+      GET /questions?page=1
     """
     page = int(request.args.get('page', '0'))
     offset = page * 10
@@ -72,10 +76,12 @@ def create_app(test_config=None):
   def delete_question(question_id):
     """
     Delete request for deleting a question by id
+    Ex:
+      DELETE /questions/1
     """
     question = Question.query.get(question_id)
     if not question:
-        return NotFound(f'Question with id {question_id} not exists')
+        return abort(404, f'Question with id {question_id} not exists')
     
     question.delete()
     return jsonify({
@@ -86,6 +92,9 @@ def create_app(test_config=None):
   def create_question():
     """
     POST request to insert a question
+    Ex:
+      POST /questions
+      body: {"question":"", "answer":"", category:1, difficulty:1}
     """
     question = request.json.get('question')
     if not question:
@@ -113,6 +122,9 @@ def create_app(test_config=None):
   def search():
     """
     POST request to search questions using the search term.
+    Ex:
+      POST /search
+      body: {"q": ""}
     """
     search_term = request.json.get('q', '')
 
@@ -132,16 +144,16 @@ def create_app(test_config=None):
         'current_categories': []
     })
 
+
   @app.route('/categories/<int:category_id>/questions', methods=['GET'])
   def get_questions_by_category(category_id):
     """
     GET request get questions by category.
+    Ex:
+      GET /categories/1/questions
     """
-    if not category_id:
-        return abort(400, 'Invalid category id')
-
     questions = [question.format() for question in
-                  Question.query.filter(Question.category == category_id)]
+                    Question.query.filter(Question.category == str(category_id))]
     
     return jsonify({
         'questions': questions,
@@ -153,20 +165,22 @@ def create_app(test_config=None):
   def get_quizz_questions():
     """
     POST request get question for quizz.
+    Ex:
+      POST /quizzes
+      body: {"previous_questions": [], "quiz_category": {"id":1}}
     """
     previous_questions = request.json.get('previous_questions')
     quiz_category = request.json.get('quiz_category')
+
     if not quiz_category:
         return abort(400, 'Required keys missing from request body')
 
-    category_id = int(quiz_category.get('id'))
+    category_id = quiz_category.get('id')
 
     questions = Question.query.filter(
-        Question.category == category_id,
-        ~Question.id.in_(previous_questions)) if category_id else \
-        Question.query.filter(~Question.id.in_(previous_questions))
+        Question.category == str(category_id), ~Question.id.in_(previous_questions))
+
     question = questions.order_by(func.random()).first()
-    
     if not question:
         return jsonify({})
     return jsonify({
@@ -182,9 +196,8 @@ def create_app(test_config=None):
     if isinstance(error, HTTPException):
         code = error.code
 
-    return jsonify({'error': 'server error', "code": code}), code
+    return jsonify({'error': str(error), "code": code}), code
 
-  app.register_error_handler(500, http_exception_handler)
   return app
 
     

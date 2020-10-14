@@ -2,6 +2,15 @@
 
 ## Getting Started
 
+## Runing the Server:
+- Steps:
+1. make install
+2. make postgres-up
+3. make populate
+4. make run
+5. make test
+6. make postgres-down
+
 ### Installing Dependencies
 
 #### Python 3.7

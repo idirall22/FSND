@@ -14,13 +14,13 @@ print:
 install:
 	pip3 install -r requirements.txt
 
-# migrate: clear-migration
-# 	flask db init
-# 	flask db migrate -m "Initial migration."
-# 	flask db upgrade	
+migrate: clear-migration
+	flask db init
+	flask db migrate -m "Initial migration."
+	flask db upgrade	
 
-# clear-migration:
-# 	rm -rf migrations
+clear-migration:
+	rm -rf migrations
 
 connect:
 	docker exec -it $(POSTGRES_CONTAINER_NAME) sh -c "psql -U postgres"
@@ -49,6 +49,9 @@ env:
 
 freeze:
 	 pip3 freeze > requirements.txt
+	 
+test:
+	python -m unittest discover -p 'test_*.py'
 
 .PHONY: 
-	run freeze env populate postgres-up postgres-down install
+	run freeze env populate postgres-up postgres-down install test
