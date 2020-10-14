@@ -3,13 +3,21 @@
 ## Getting Started
 
 ## Runing the Server:
-- Steps:
-1. make install
-2. make postgres-up
-3. make populate
-4. make run
-5. make test
-6. make postgres-down
+
+- **start server**
+1. make env 
+2. source env/bin/activate
+3. make install
+4. make postgres-up
+5. make populate
+6. make run
+
+- **run tests**
+1. source env/bin/activate
+2. make test
+
+- **clean postgres database**
+1. make postgres-down
 
 ### Installing Dependencies
 
