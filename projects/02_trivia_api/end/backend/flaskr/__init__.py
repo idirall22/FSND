@@ -14,6 +14,8 @@ def create_app(test_config=None):
   app = Flask(__name__)
   setup_db(app)
   
+
+  
   @app.after_request
   def set_headers(response):
     """
@@ -24,6 +26,11 @@ def create_app(test_config=None):
     response.headers.add('Access-Control-Allow-Methods',
                           'GET, PATCH, POST, DELETE, OPTIONS')
     return response
+
+  @app.route('/', methods=['GET'])
+  def homepage():
+    abort(500)
+
 
   @app.route('/categories', methods=['GET'])
   def get_all_categories():
@@ -175,15 +182,9 @@ def create_app(test_config=None):
     if isinstance(error, HTTPException):
         code = error.code
 
-    return jsonify({'error': error}), code
+    return jsonify({'error': 'server error', "code": code}), code
 
-  @app.errorhandler(Exception)
-  def exception_handler(error):
-    """
-    500 Server error
-    """
-    return jsonify({'message': f'Server error: {error}'}), 500
-
+  app.register_error_handler(500, http_exception_handler)
   return app
 
     

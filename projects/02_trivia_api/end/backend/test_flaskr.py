@@ -28,6 +28,38 @@ class TriviaTestCase(unittest.TestCase):
     def tearDown(self):
         """Executed after reach test"""
         pass
+    
+    def test_get_all_categories(self):
+        response = self.client().get('/categories')
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_questions(self):
+        response = self.client().get('/questions?page=1')
+        data = json.loads(response.data)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertLessEqual(len(data['questions']), 10)
+
+    def test_delete_question(self):
+        id = 1
+        res = self.client().delete(f'/questions/{id}')
+        data = json.loads(res.data)
+        
+        if res.status_code == 404:
+            self.assertEqual(data['success'], False)
+        else:
+            self.assertEqual(data['deleted'], id)
+
+    def test_create_question(self):
+        data = json.dumps(question = {
+            'question': 'How many african countries are there?',
+            'answer': '54',
+            'category': 1,
+            'difficulty': 1
+        })
+        response = self.client().post('/questions', data=data, content_type='application/json')
+        data = json.loads(response.data)
+        self.assertEqual(response.status_code, 200)
 
     """
     TODO

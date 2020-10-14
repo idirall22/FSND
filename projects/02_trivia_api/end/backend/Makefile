@@ -1,4 +1,5 @@
 POSTGRES_CONTAINER_NAME=api-postgres
+include .env
 
 print:
 	@echo "run 'make postgres-up' to start postgres container."
@@ -39,10 +40,8 @@ postgres-down:
 populate:
 	docker cp trivia.psql $(POSTGRES_CONTAINER_NAME):/trivia.psql
 	docker exec $(POSTGRES_CONTAINER_NAME) sh -c "psql -U postgres -d trivia -c '\i trivia.psql'"
-	
+
 run:
-	export FLASK_APP=flaskr
-	export FLASK_ENV=development
 	flask run
 
 env:
@@ -50,3 +49,6 @@ env:
 
 freeze:
 	 pip3 freeze > requirements.txt
+
+.PHONY: 
+	run freeze env populate postgres-up postgres-down install
