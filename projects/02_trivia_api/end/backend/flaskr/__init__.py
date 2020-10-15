@@ -27,19 +27,16 @@ def create_app(test_config=None):
                           'GET, PATCH, POST, DELETE, OPTIONS')
     return response
 
-  @app.route('/', methods=['GET'])
-  def homepage():
-    abort(500)
-
-  ###
   @app.route('/categories', methods=['GET'])
   def get_all_categories():
     """
     GET request for all available categories
-    Ex:
-      GET /categories
     """
     allCategories = Category.query.all()
+    
+    if not allCategories:
+        return abort(404, f'Categories not exists')
+
     categories = {}
     for category in allCategories:
         categories[category.id] = category.type
@@ -51,8 +48,6 @@ def create_app(test_config=None):
   def get_questions():
     """
     Get request for questions, categories, total number of total questions.
-    Ex:
-      GET /questions?page=1
     """
     page = int(request.args.get('page', '0'))
     offset = page * 10
@@ -63,8 +58,12 @@ def create_app(test_config=None):
     for category in all_categories:
         categories[category.id] = category.type
 
+        
     questions = [question.format() \
        for question in Question.query.limit(limit).offset(offset)]
+
+    if not questions:
+        return abort(404, f'questions not exists')
 
     return jsonify({
         'questions': questions,
@@ -76,8 +75,6 @@ def create_app(test_config=None):
   def delete_question(question_id):
     """
     Delete request for deleting a question by id
-    Ex:
-      DELETE /questions/1
     """
     question = Question.query.get(question_id)
     if not question:
@@ -92,9 +89,6 @@ def create_app(test_config=None):
   def create_question():
     """
     POST request to insert a question
-    Ex:
-      POST /questions
-      body: {"question":"", "answer":"", category:1, difficulty:1}
     """
     question = request.json.get('question')
     if not question:
@@ -122,17 +116,11 @@ def create_app(test_config=None):
   def search():
     """
     POST request to search questions using the search term.
-    Ex:
-      POST /search
-      body: {"q": ""}
     """
     search_term = request.json.get('q', '')
 
     if search_term == "":
-      return jsonify({
-          'error': 'search term should not be empty'
-      })  
-    
+      return abort(400, "search term 'q' field should not be empty")
     
     allQuestions = Question.query.filter(
       Question.question.like("%" + search_term + "%"))
@@ -149,12 +137,13 @@ def create_app(test_config=None):
   def get_questions_by_category(category_id):
     """
     GET request get questions by category.
-    Ex:
-      GET /categories/1/questions
     """
     questions = [question.format() for question in
                     Question.query.filter(Question.category == str(category_id))]
-    
+
+    if not questions:
+      return abort(404, "questions with category id {category_id} not exists")
+
     return jsonify({
         'questions': questions,
         'total_questions': len(questions),
@@ -165,9 +154,6 @@ def create_app(test_config=None):
   def get_quizz_questions():
     """
     POST request get question for quizz.
-    Ex:
-      POST /quizzes
-      body: {"previous_questions": [], "quiz_category": {"id":1}}
     """
     previous_questions = request.json.get('previous_questions')
     quiz_category = request.json.get('quiz_category')
@@ -178,7 +164,9 @@ def create_app(test_config=None):
     category_id = quiz_category.get('id')
 
     questions = Question.query.filter(
-        Question.category == str(category_id), ~Question.id.in_(previous_questions))
+        Question.category == str(category_id),
+            ~Question.id.in_(previous_questions)) if category_id else \
+            Question.query.filter(~Question.id.in_(previous_questions))
 
     question = questions.order_by(func.random()).first()
     if not question:
@@ -196,7 +184,11 @@ def create_app(test_config=None):
     if isinstance(error, HTTPException):
         code = error.code
 
-    return jsonify({'error': str(error), "code": code}), code
+    return jsonify({
+      'error': str(error),
+      "code": code,
+      "success": False
+      }), code
 
   return app
 
