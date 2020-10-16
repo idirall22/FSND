@@ -72,7 +72,7 @@ class TriviaTestCase(unittest.TestCase):
         id = 5
         response = self.client().delete(f"/questions/{id}")
         data = json.loads(response.data)
-        if not data["success"]:
+        if response.status_code == 404:
             self.assertEqual(response.status_code, 404)
         else:
             self.assertEqual(data['deleted'], id)
