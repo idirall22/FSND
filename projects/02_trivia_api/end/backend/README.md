@@ -98,11 +98,9 @@ One note before you delve into your tasks: for each endpoint you are expected to
 }
 ```
 
-- The API will return three error when request fails:
+- The API will return two error when request fails:
     * 400: Bad Request
     * 404: Ressource Not Found
-    * 422: Not Processable
-
 
 ### GET/categories
 - **General**
