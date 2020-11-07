@@ -2,6 +2,14 @@
 
 ## Getting Started
 
+- **Host: http://localhost:5000**
+
+#### Steps to run the backend on localhost:
+1. make env `generate env`  
+2. source env/bin/activate
+3. make install `install requirements.txt file`
+4. make run `start the server`
+
 ### Installing Dependencies
 
 #### Python 3.7
@@ -84,14 +92,191 @@ There are `@TODO` comments throughout the `./backend/src`. We recommend tackling
 1. `./src/auth/auth.py`
 2. `./src/api.py`
 
+## Endpoints
+### Getting Started
+- Base URL: `http://127.0.0.1:5000/`
+- Authentication: require auth.
 
-barista@email.com
-barista12/
+### Error Handling
+- Error are returned as JSON object in the following format:
+```js
+{
+    "success": False,
+    "error": 400,
+    "message": "bad request"
+}
+```
 
-manager@email.com
-manager12/
+- The API will return two error when request fails:
+    * 400: Bad Request
+    * 401: unauthorized
+    * 404: Ressource Not Found
+    * 422: unprocessable
 
-https://dev-m79h6sy4.eu.auth0.com/authorize?audience=coffee&response_type=token&client_id=K9LfxArSBfDrUnOSUGXwZARlbNC55Vo3&redirect_uri=http://localhost:4200/tabs/user-page
+### GET/drinks
+- **General**
+    * Return a list of drinks.
+    * Auth not required
+- **Sample**
+    * `http://127.0.0.1:5000/drinks`
 
+```js
+response:
+    {
+        "success" True,
+        "drinks":[
+            {
+                "success": True,
+                "drinks": {
+                    "title": "drink_name",
+                    "recips": [
+                        {
+                            "color": "xxx",
+                            "parts": 1
+                        }
+                    ],
+                }
+            },
+            {
+                "success": True,
+                "drinks": {
+                    "title": "drink_name",
+                    "recips": [
+                        {
+                            "color": "xxx",
+                            "parts": 1
+                        }
+                    ],
+                }
+            }
+        ]
+    }
+```
+### GET/drinks-detail
+- **General**
+    * Return a full detailed list of drinks.
+    * Auth required `get:drinks-detail`
+- **Sample**
+    * `http://127.0.0.1:5000/drinks-detail`
 
-eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Imp6RjJhNlloWmVlREc5WTh3MWJuciJ9.eyJpc3MiOiJodHRwczovL2Rldi1tNzloNnN5NC5ldS5hdXRoMC5jb20vIiwic3ViIjoiYXV0aDB8NWZhNmVjYjhjYWUwMzIwMDcxOWZiNzIyIiwiYXVkIjoiY29mZmVlIiwiaWF0IjoxNjA0Nzc1NzgzLCJleHAiOjE2MDQ3ODI5ODMsImF6cCI6Iks5TGZ4QXJTQmZEclVuT1NVR1h3WkFSbGJOQzU1Vm8zIiwic2NvcGUiOiIiLCJwZXJtaXNzaW9ucyI6WyJkZWxldGU6ZHJpbmtzIiwiZ2V0OmRyaW5rcy1kZXRhaWwiLCJwYXRjaDpkcmlua3MiLCJwb3N0OmRyaW5rcyJdfQ.nG1bikxyMtGPaZJhJaZiTTGDS8fw2msJrDuHfbFIpcO6A7G_RkLTHg0B9Wzi5ODaDyy9_GNvn611CEja0w_ht0cDKFqd449fXBTQODAoXyyPfSTPHs8oZ1Lg7_aKMaWdfIUIMFE5Ni_Owd8jPcwAQmPCVKTuUTuD5l4je73nOgF8CqMfpvaUPng0zbLzIvffLTNCLGwMc99B1YustEg1taJVvAj3De-pgGNNk6GDRqdNKn67A7a971DdkXPCcIQKGquYYA4Lhm1152i3oXB9uOOyVX9m8W68m1QqAjUb3hWG5psV1MpflI9vA_secM4cDEhnMcwUMTWyt8DVmunpZA
+```js
+response:
+    {
+        "success" True,
+        "drinks":[
+            {
+                "success": True,
+                "drinks": {
+                    "title": "drink_name",
+                    "recips": [
+                        {
+                            "name": "xxx",
+                            "color": "xxx",
+                            "parts": 1
+                        }
+                    ],
+                }
+            },
+            {
+                "success": True,
+                "drinks": {
+                    "title": "drink_name",
+                    "recips": [
+                        {
+                            "name": "xxx",
+                            "color": "xxx",
+                            "parts": 1
+                        }
+                    ],
+                }
+            }
+        ]
+    }
+```
+
+### POST/drinks
+- **General**
+    * Create a drink.
+    * Auth required `post:drinks`
+- **Sample**
+    * `http://127.0.0.1:5000/drinks`
+
+```js
+request:
+    {
+        "title": "xxx",
+        "recips": [
+            {
+                "name": "xxx",
+                "color": "xxx",
+                "parts": 1
+            }
+        ]
+    }
+response: 
+    {   
+        "success": True,
+        "drink":{
+            "id": 1,
+            "title": "xxx",
+            "recips": [
+                {
+                    "name": "xxx",
+                    "color": "xxx",
+                    "parts": 1
+                }
+            ]
+        }
+    }
+```
+
+### PATCH/drinks/<drink_id>
+- **General**
+    * Update a drink.
+    * Auth required `patch:drinks`
+- **Sample**
+    * `http://127.0.0.1:5000/drinks/1`
+
+```js
+request:
+    {
+        "title": "xxx",
+        "recips": [
+            {
+                "name": "xxx",
+                "color": "xxx",
+                "parts": 1
+            }
+        ]
+    }
+response: 
+    {   
+        "success": True,
+        "drink":{
+            "id": 1,
+            "title": "xxx",
+            "recips": [
+                {
+                    "name": "xxx",
+                    "color": "xxx",
+                    "parts": 1
+                }
+            }
+        ]
+    }
+```
+
+### DELETE/drinks/<drink_id>
+- **General**
+    * Delete a drink.
+    * Auth required `delete:drinks`
+- **Sample**
+    * `http://127.0.0.1:5000/drinks/1`
+
+```js
+response: 
+    {
+        'success': True,
+        'delete': 1
+    }
+```
