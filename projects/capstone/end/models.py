@@ -33,7 +33,7 @@ def setup_db(app, database_path=database_path):
     db.init_app(app)
     migrate.init_app(app, db)
     db.create_all()
-    # db_init_records()
+    db_drop_and_create_all()
 
 def db_drop_and_create_all():
     '''drops the database tables and starts fresh
@@ -41,7 +41,7 @@ def db_drop_and_create_all():
     '''
     db.drop_all()
     db.create_all()
-    # db_init_records()
+    db_init_records()
 
 def db_init_records():
     '''this will initialize the database with some test records.'''
