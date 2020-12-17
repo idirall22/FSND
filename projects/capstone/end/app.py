@@ -4,6 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from models import setup_db, Actor, Movie
 import json
+from auth import AuthError, requires_auth
 
 pagination = 10
 
@@ -25,8 +26,8 @@ def create_app(test_config=None):
 
   # List actors
   @app.route('/actors', methods=['GET'])
-  # @requires_auth('read:actors')
-  def get_actors():
+  @requires_auth('read:actors')
+  def get_actors(payload):
     """Returns paginated actors object"""
 
     page = request.args.get('page', 1, type=int)
@@ -46,8 +47,8 @@ def create_app(test_config=None):
   
   # Create an actor.
   @app.route('/actors', methods=['POST'])
-  # @requires_auth('create:actors')
-  def create_actor():
+  @requires_auth('create:actors')
+  def create_actor(payload):
     """Inserts a new Actor"""
 
     # Get request json
@@ -85,8 +86,8 @@ def create_app(test_config=None):
 
   # Update an actor.
   @app.route('/actors/<actor_id>', methods=['PATCH'])
-  # @requires_auth('edit:actors')
-  def edit_actors(actor_id):
+  @requires_auth('edit:actors')
+  def edit_actors(payload, actor_id):
     """Edit an existing Actor"""
     
     # Get request json
@@ -120,8 +121,8 @@ def create_app(test_config=None):
 
 
   @app.route('/actors/<actor_id>', methods=['DELETE'])
-  # @requires_auth('delete:actors')
-  def delete_actors(actor_id):
+  @requires_auth('delete:actors')
+  def delete_actors(payload, actor_id):
     """Delete an existing Actor"""
 
     # Check if actor id is not provided
@@ -148,8 +149,8 @@ def create_app(test_config=None):
   # ----------------------------------------------------------------
 
   @app.route('/movies', methods=['GET'])
-  # @requires_auth('read:movies')
-  def get_movies():
+  @requires_auth('read:movies')
+  def get_movies(payload):
     """Returns paginated movies object"""
 
     page = request.args.get('page', 1, type=int)
@@ -168,8 +169,8 @@ def create_app(test_config=None):
     })
 
   @app.route('/movies', methods=['POST'])
-  # @requires_auth('create:movies')
-  def insert_movies():
+  @requires_auth('create:movies')
+  def insert_movies(payload):
     """Inserts a new movie"""
 
     # Get request json
@@ -199,8 +200,8 @@ def create_app(test_config=None):
     })
 
   @app.route('/movies/<movie_id>', methods=['PATCH'])
-  # @requires_auth('edit:movies')
-  def edit_movies(movie_id):
+  @requires_auth('edit:movies')
+  def edit_movies(payload, movie_id):
     """Edit an existing Movie"""
     
     # Get request json
@@ -232,8 +233,8 @@ def create_app(test_config=None):
     })
 
   @app.route('/movies/<movie_id>', methods=['DELETE'])
-  # @requires_auth('delete:movies')
-  def delete_movies(movie_id):
+  @requires_auth('delete:movies')
+  def delete_movies(payload, movie_id):
     """Delete an existing Movie"""
 
     # Check if movie id is not provided
@@ -283,13 +284,13 @@ def create_app(test_config=None):
                         "message": get_error_message(error, "resource not found")
                         }), 404
 
-    # @app.errorhandler(AuthError)
-    # def authentification_failed(AuthError): 
-    #     return jsonify({
-    #                     "success": False, 
-    #                     "error": AuthError.status_code,
-    #                     "message": AuthError.error['description']
-    #                     }), AuthError.status_code
+    @app.errorhandler(AuthError)
+    def authentification_failed(AuthError): 
+        return jsonify({
+                        "success": False, 
+                        "error": AuthError.status_code,
+                        "message": AuthError.error['description']
+                        }), AuthError.status_code
 
 
   return app

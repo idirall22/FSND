@@ -47,11 +47,11 @@ def db_init_records():
     '''this will initialize the database with some test records.'''
 
     new_actor = (Actor(
-        name = 'Matthew',
-        gender = 'Male',
-        age = 25
-        ))
-
+      name = 'Sarah',
+      gender = 'Femal',
+      age = 25
+    ))
+    
     new_movie = (Movie(
         title = 'Matthew first Movie',
         release_date = date.today()
