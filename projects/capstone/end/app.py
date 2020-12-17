@@ -10,11 +10,11 @@ pagination = 10
 
 def create_app(test_config=None):
   # create and configure the app
-  app = Flask(__name__)
-  CORS(app)
-  setup_db(app)
+  APP = Flask(__name__)
+  CORS(APP)
+  setup_db(APP)
 
-  @app.after_request
+  @APP.after_request
   def after_request(response):
       response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization,true')
       response.headers.add('Access-Control-Allow-Methods', 'GET,PATCH,POST,DELETE,OPTIONS')
@@ -25,7 +25,7 @@ def create_app(test_config=None):
   # ----------------------------------------------------------------
 
   # List actors
-  @app.route('/actors', methods=['GET'])
+  @APP.route('/actors', methods=['GET'])
   @requires_auth('read:actors')
   def get_actors(payload):
     """Returns paginated actors object"""
@@ -37,16 +37,17 @@ def create_app(test_config=None):
     actors = Actor.query.all()
     actors_formatted = [act.format() for act in actors]
 
+    actors_formatted = actors_formatted[start:end]
     if len(actors_formatted) == 0:
       abort(404, {'message': 'no actors found.'})
 
     return jsonify({
       'success': True,
-      'actors': actors_formatted[start:end]
+      'actors': actors_formatted
     })
   
   # Create an actor.
-  @app.route('/actors', methods=['POST'])
+  @APP.route('/actors', methods=['POST'])
   @requires_auth('create:actors')
   def create_actor(payload):
     """Inserts a new Actor"""
@@ -85,7 +86,7 @@ def create_app(test_config=None):
     })
 
   # Update an actor.
-  @app.route('/actors/<actor_id>', methods=['PATCH'])
+  @APP.route('/actors/<actor_id>', methods=['PATCH'])
   @requires_auth('edit:actors')
   def edit_actors(payload, actor_id):
     """Edit an existing Actor"""
@@ -120,7 +121,7 @@ def create_app(test_config=None):
     })
 
 
-  @app.route('/actors/<actor_id>', methods=['DELETE'])
+  @APP.route('/actors/<actor_id>', methods=['DELETE'])
   @requires_auth('delete:actors')
   def delete_actors(payload, actor_id):
     """Delete an existing Actor"""
@@ -148,7 +149,7 @@ def create_app(test_config=None):
   # Movie
   # ----------------------------------------------------------------
 
-  @app.route('/movies', methods=['GET'])
+  @APP.route('/movies', methods=['GET'])
   @requires_auth('read:movies')
   def get_movies(payload):
     """Returns paginated movies object"""
@@ -158,17 +159,19 @@ def create_app(test_config=None):
     end = start + pagination
 
     movies = Movie.query.all()
+
+    movies_formatted = [mov.format() for mov in movies]
+    movies_formatted = movies_formatted[start:end]
+    
     if len(movies) == 0:
       abort(404, {'message': 'no movies found in database.'})
 
-    movies_formatted = [mov.format() for mov in movies]
-
     return jsonify({
       'success': True,
-      'movies': movies_formatted[start:end]
+      'movies': movies_formatted
     })
 
-  @app.route('/movies', methods=['POST'])
+  @APP.route('/movies', methods=['POST'])
   @requires_auth('create:movies')
   def insert_movies(payload):
     """Inserts a new movie"""
@@ -199,7 +202,7 @@ def create_app(test_config=None):
       'created': movie.id
     })
 
-  @app.route('/movies/<movie_id>', methods=['PATCH'])
+  @APP.route('/movies/<movie_id>', methods=['PATCH'])
   @requires_auth('edit:movies')
   def edit_movies(payload, movie_id):
     """Edit an existing Movie"""
@@ -232,7 +235,7 @@ def create_app(test_config=None):
       'movie' : [movie.format()]
     })
 
-  @app.route('/movies/<movie_id>', methods=['DELETE'])
+  @APP.route('/movies/<movie_id>', methods=['DELETE'])
   @requires_auth('delete:movies')
   def delete_movies(payload, movie_id):
     """Delete an existing Movie"""
@@ -256,47 +259,43 @@ def create_app(test_config=None):
       'deleted': movie_id
     })
 
-    # ----------------------------------------------------------------
-    # Error Handlers
-    # ----------------------------------------------------------------
+  @APP.errorhandler(AuthError)
+  def authentification_failed(error): 
+      return jsonify({
+        "success": False, 
+        "error": error.status_code,
+        "message": error.error['description']
+      }), error.status_code
 
-    @app.errorhandler(422)
-    def unprocessable(error):
-        return jsonify({
-                        "success": False, 
-                        "error": 422,
-                        "message": get_error_message(error,"unprocessable")
-                        }), 422
+  @APP.errorhandler(422)
+  def unprocessable(error):
+      return jsonify({
+        "success": False, 
+        "error": 422,
+        "message": "unprocessable"
+      }), 422
 
-    @app.errorhandler(400)
-    def bad_request(error):
-        return jsonify({
-                        "success": False, 
-                        "error": 400,
-                        "message": get_error_message(error, "bad request")
-                        }), 400
+  @APP.errorhandler(400)
+  def bad_request(error):
+      return jsonify({
+        "success": False, 
+        "error": 400,
+        "message": "bad request"
+      }), 400
 
-    @app.errorhandler(404)
-    def ressource_not_found(error):
-        return jsonify({
-                        "success": False, 
-                        "error": 404,
-                        "message": get_error_message(error, "resource not found")
-                        }), 404
+  @APP.errorhandler(404)
+  def ressource_not_found(error):
+      return jsonify({
+        "success": False, 
+        "error": 404,
+        "message": "resource not found"
+      }), 404
 
-    @app.errorhandler(AuthError)
-    def authentification_failed(AuthError): 
-        return jsonify({
-                        "success": False, 
-                        "error": AuthError.status_code,
-                        "message": AuthError.error['description']
-                        }), AuthError.status_code
+  return APP
 
 
-  return app
+app = create_app()
 
-
-APP = create_app()
 
 if __name__ == '__main__':
-    APP.run(host='0.0.0.0', port=8080, debug=True)
+    app.run(host='0.0.0.0', port=8080, debug=True)
