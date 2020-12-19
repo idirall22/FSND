@@ -58,5 +58,8 @@ freeze:
 test:
 	python -m unittest discover -p 'test_*.py'
 
+heroku:
+	git push heroku master --force
+
 .PHONY: 
 	run freeze env populate postgres-up postgres-down install test
