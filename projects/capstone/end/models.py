@@ -41,32 +41,6 @@ def db_drop_and_create_all():
     '''
     db.drop_all()
     db.create_all()
-    db_init_records()
-
-def db_init_records():
-    '''this will initialize the database with some test records.'''
-
-    new_actor = (Actor(
-      name = 'Sarah',
-      gender = 'Femal',
-      age = 25
-    ))
-    
-    new_movie = (Movie(
-        title = 'Matthew first Movie',
-        release_date = date.today()
-        ))
-
-    new_performance = Performance.insert().values(
-        Movie_id = new_movie.id,
-        Actor_id = new_actor.id,
-        actor_fee = 500.00
-    )
-
-    new_actor.insert()
-    new_movie.insert()
-    db.session.execute(new_performance) 
-    db.session.commit()
 
 #----------------------------------------------------------------------------#
 # Models
