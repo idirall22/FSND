@@ -1,40 +1,47 @@
 # Capston
 
 ## Getting Started
+### Motivation for the project
+The Agency project is a Rest API built using python3 and flask, it allows to manage an agency using an RBAC access control, and permit to management actors and movies.
 
-#### Steps to run the tests localhost:
+### Steps to run the tests localhost:
 - **Host: http://localhost:5000**
 1. make env `generate env`  
-2. source env/bin/activate
+2. run `source ./setup.sh`
 3. make install `install requirements.txt file`
 4. make postgres-up `create postgres container`
 5. make run `start the server`
 6. make test `run all the tests`
 7. make postgres-down `delete postgres container`
 
-#### Steps to run the tests localhost:
+### Steps to run the tests localhost:
 - **Host: https://idir-capston.herokuapp.com/**
 
 ### Producer Actions:
 
 ## Curl Create an actor
 ```js
-curl -X POST -H "Content-type: application/json" -H "Authorization: bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ik1xMktwY1Q5WU9nSjE2Ml92cDZ1NyJ9.eyJpc3MiOiJodHRwczovL2Rldi05MnB2Z2t3My5ldS5hdXRoMC5jb20vIiwic3ViIjoiYXV0aDB8NWZkYTVkMTU0NWEyZjUwMDZlZTA3NjQwIiwiYXVkIjoiY2Fwc3RvbiIsImlhdCI6MTYwODM4MTc1MiwiZXhwIjoxNjA4NDY4MTUyLCJhenAiOiJqVHAzMERvWUx2Z2ZPUTJrbjBPa1N4Z0J1b095cTRiQSIsInNjb3BlIjoiIiwicGVybWlzc2lvbnMiOlsiY3JlYXRlOmFjdG9ycyIsImNyZWF0ZTptb3ZpZXMiLCJkZWxldGU6YWN0b3JzIiwiZGVsZXRlOm1vdmllcyIsImVkaXQ6YWN0b3JzIiwiZWRpdDptb3ZpZXMiLCJyZWFkOmFjdG9ycyIsInJlYWQ6bW92aWVzIl19.sZCc0qVOwtIy8nXbNuL2M8tJ05zzV0fBkChWrIMht4XANIW6x8R_nnak-_MJWVs-Pszj-6lPtradIl6PGByWd6DJSBQ-LOs3CKAr0gFrtEcIqWgvSX1gY7jWhBP0BGeWd_bYCDWJMrMmr39VhjnbVsg0-LoCnv3AuhOFpWuieET3ct3FfnJxgbCLHJYTW-vIPaLpcJyukWmS--OGYUX4Eibc4yrtd1BIwO2iSxq0yazTL-F0_3e2IM0pzHQzpw6MJhG446f9zPePkdfEYD-fE4-sRcL3H5sIHd6NxIpbk1nGxM9eUNpBleuzWkF79MxYGr7G2iuPUSSLrspolrb_vQ" -d '{"name": "jack", "age": 25}' https://idir-capston.herokuapp.com/actors
+curl -X POST -H "Content-type: application/json" -H "Authorization: $PRODUCER" -d '{"name": "jack", "age": 25}' https://idir-capston.herokuapp.com/actors
 ```
 
 ## Curl Get a list of actors
 ```js
-curl -H "Authorization: bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ik1xMktwY1Q5WU9nSjE2Ml92cDZ1NyJ9.eyJpc3MiOiJodHRwczovL2Rldi05MnB2Z2t3My5ldS5hdXRoMC5jb20vIiwic3ViIjoiYXV0aDB8NWZkYTVjYzNjMDgzNDQwMDY4YjgwZTgwIiwiYXVkIjoiY2Fwc3RvbiIsImlhdCI6MTYwODM4MTI3NiwiZXhwIjoxNjA4NDY3Njc2LCJhenAiOiJqVHAzMERvWUx2Z2ZPUTJrbjBPa1N4Z0J1b095cTRiQSIsInNjb3BlIjoiIiwicGVybWlzc2lvbnMiOlsicmVhZDphY3RvcnMiLCJyZWFkOm1vdmllcyJdfQ.DCcgHX-Y19wtb5s47cP_jjIr4snw0mMel2rkEcsLIyMbGjGc9jNel_OdhnB2_Hoa8gNwJpYgXMh2ymkw-coHtGMOPVyN-iYAD7DGgsqLnNZXmQan9bCFM-KDuzg6op7zyvktZ9Uu3-8fi68POucGHmfw1KG5REjZXcRl8aE8u-j6N1yfvRkzy-s0NapZcQ96X6ftQstajrwgoUMu4b1PhnlYlXnYLNt6cqGI2vPvklrUgD_fNvzcQoMnn1rbpxRsiWQ67CFbUUg0fXwsRAJ8IkKAOXrlwCd7bGaLrPeToEEHs-oxgLfiU0AfI-Hj1pDOdK0jg7KBq0ukIJLyQGimUA" https://idir-capston.herokuapp.com/actors
+curl -H "Authorization: $PRODUCER" https://idir-capston.herokuapp.com/actors
 ```
 
 ## Curl PATCH an actors
 ```js
-curl -X PATCH -H "Content-type: application/json" -H "Authorization: bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ik1xMktwY1Q5WU9nSjE2Ml92cDZ1NyJ9.eyJpc3MiOiJodHRwczovL2Rldi05MnB2Z2t3My5ldS5hdXRoMC5jb20vIiwic3ViIjoiYXV0aDB8NWZkYTVkMTU0NWEyZjUwMDZlZTA3NjQwIiwiYXVkIjoiY2Fwc3RvbiIsImlhdCI6MTYwODM4MTc1MiwiZXhwIjoxNjA4NDY4MTUyLCJhenAiOiJqVHAzMERvWUx2Z2ZPUTJrbjBPa1N4Z0J1b095cTRiQSIsInNjb3BlIjoiIiwicGVybWlzc2lvbnMiOlsiY3JlYXRlOmFjdG9ycyIsImNyZWF0ZTptb3ZpZXMiLCJkZWxldGU6YWN0b3JzIiwiZGVsZXRlOm1vdmllcyIsImVkaXQ6YWN0b3JzIiwiZWRpdDptb3ZpZXMiLCJyZWFkOmFjdG9ycyIsInJlYWQ6bW92aWVzIl19.sZCc0qVOwtIy8nXbNuL2M8tJ05zzV0fBkChWrIMht4XANIW6x8R_nnak-_MJWVs-Pszj-6lPtradIl6PGByWd6DJSBQ-LOs3CKAr0gFrtEcIqWgvSX1gY7jWhBP0BGeWd_bYCDWJMrMmr39VhjnbVsg0-LoCnv3AuhOFpWuieET3ct3FfnJxgbCLHJYTW-vIPaLpcJyukWmS--OGYUX4Eibc4yrtd1BIwO2iSxq0yazTL-F0_3e2IM0pzHQzpw6MJhG446f9zPePkdfEYD-fE4-sRcL3H5sIHd6NxIpbk1nGxM9eUNpBleuzWkF79MxYGr7G2iuPUSSLrspolrb_vQ" -d '{"name": "jack2", "age": 27}' https://idir-capston.herokuapp.com/actors/1
+curl -X PATCH -H "Content-type: application/json" -H "Authorization: $PRODUCER" -d '{"name": "jack2", "age": 27}' https://idir-capston.herokuapp.com/actors/1
 ```
 
 # Generate JWT:
 You can use this url to generate JWT:
 `https://dev-92pvgkw3.eu.auth0.com/authorize?audience=capston&response_type=token&client_id=jTp30DoYLvgfOQ2kn0OkSxgBuoOyq4bA&redirect_uri=http://loclalhost:5000/`
+
+## Curl DELETE an actors
+```js
+curl -X DELETE -H "Content-type: application/json" -H "Authorization: " https://idir-capston.herokuapp.com/actors/1
+```
 
 ### Credentials:
 - assistant:
@@ -47,11 +54,6 @@ You can use this url to generate JWT:
     1. Email: director@email.com
     2. Password: 1Director*/
     
-## Curl DELETE an actors
-```js
-curl -X DELETE -H "Content-type: application/json" -H "Authorization: bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ik1xMktwY1Q5WU9nSjE2Ml92cDZ1NyJ9.eyJpc3MiOiJodHRwczovL2Rldi05MnB2Z2t3My5ldS5hdXRoMC5jb20vIiwic3ViIjoiYXV0aDB8NWZkYTVkMTU0NWEyZjUwMDZlZTA3NjQwIiwiYXVkIjoiY2Fwc3RvbiIsImlhdCI6MTYwODM4MTc1MiwiZXhwIjoxNjA4NDY4MTUyLCJhenAiOiJqVHAzMERvWUx2Z2ZPUTJrbjBPa1N4Z0J1b095cTRiQSIsInNjb3BlIjoiIiwicGVybWlzc2lvbnMiOlsiY3JlYXRlOmFjdG9ycyIsImNyZWF0ZTptb3ZpZXMiLCJkZWxldGU6YWN0b3JzIiwiZGVsZXRlOm1vdmllcyIsImVkaXQ6YWN0b3JzIiwiZWRpdDptb3ZpZXMiLCJyZWFkOmFjdG9ycyIsInJlYWQ6bW92aWVzIl19.sZCc0qVOwtIy8nXbNuL2M8tJ05zzV0fBkChWrIMht4XANIW6x8R_nnak-_MJWVs-Pszj-6lPtradIl6PGByWd6DJSBQ-LOs3CKAr0gFrtEcIqWgvSX1gY7jWhBP0BGeWd_bYCDWJMrMmr39VhjnbVsg0-LoCnv3AuhOFpWuieET3ct3FfnJxgbCLHJYTW-vIPaLpcJyukWmS--OGYUX4Eibc4yrtd1BIwO2iSxq0yazTL-F0_3e2IM0pzHQzpw6MJhG446f9zPePkdfEYD-fE4-sRcL3H5sIHd6NxIpbk1nGxM9eUNpBleuzWkF79MxYGr7G2iuPUSSLrspolrb_vQ" https://idir-capston.herokuapp.com/actors/1
-```
-
 ### Installing Dependencies
 
 #### Python 3.7
@@ -81,6 +83,29 @@ This will install all of the required packages we selected within the `requireme
 - [jose](https://python-jose.readthedocs.io/en/latest/) JavaScript Object Signing and Encryption for JWTs. Useful for encoding, decoding, and verifying JWTS.
 
 ## Endpoints
+
+## Permissions (RBAC)
+The API uses RBAC for access control:
+- assistant: 
+    * read:actors
+    * read:movies
+- producer:
+    * read:actors
+    * edit:actors	
+    * create:actors
+    * delete:actors	
+    * read:movies
+    * create:movies
+    * edit:movies
+    * delete:movies	
+- director:
+    * read:actors
+    * read:movies
+    * create:actors
+    * delete:actors	
+    * edit:actors	
+    * edit:movies
+
 ### Getting Started
 - Base URL: `http://127.0.0.1:5000/`
 - Authentication: require auth.

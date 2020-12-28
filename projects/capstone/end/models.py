@@ -5,8 +5,6 @@ import json
 from datetime import date
 from flask_migrate import Migrate
 
-# from config import database_setup
-
 #----------------------------------------------------------------------------#
 # Database Setup 
 #----------------------------------------------------------------------------#

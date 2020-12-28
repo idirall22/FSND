@@ -5,7 +5,6 @@ POSTGRES_USERNAME=$(PG_USERNAME)
 POSTGRES_PASSWORD=$(PG_PASSWORD)
 POSTGRES_DATABASE_NAME=$(PG_DATABASE_NAME)
 
-
 print:
 	@echo "run 'make postgres-up' to start postgres container."
 	@echo "run 'make postgres-down' to delete postgres container."
@@ -46,7 +45,7 @@ populate:
 	docker cp trivia.psql $(POSTGRES_CONTAINER_NAME):/trivia.psql
 	docker exec $(POSTGRES_CONTAINER_NAME) sh -c "psql -U postgres -d trivia -c '\i trivia.psql'"
 
-run:
+run: 
 	flask run
 
 env:
@@ -62,4 +61,4 @@ heroku:
 	git push heroku master --force
 
 .PHONY: 
-	run freeze env populate postgres-up postgres-down install test
+	run freeze env populate postgres-up postgres-down install test ss
